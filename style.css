@@ -1,0 +1,63 @@
+body {
+    background-color: #333;
+    font-family: 'Comic Sans MS';
+}
+
+.title {
+    color: #fff;
+    text-align: center;
+    font-size: 50px;
+    margin: 0;
+    padding: 0;
+}
+
+.field-wrapper {
+    margin: auto;
+    padding: 50px;
+    border-radius: 50px;
+    width: 50vw;
+    background-color: #009;
+}
+
+.field {
+    margin: auto;
+    background-color: #999;
+}
+
+.black {
+    display: table-cell;
+    background-color: #000;
+    border-radius: 5px;
+    width: 35px;
+    height: 35px;
+    margin: 5px;
+}
+
+
+.cyan {
+    background-color: #0FF;
+}
+
+.blue {
+    background-color: #00F;
+}
+
+.orange {
+    background-color: #F60;
+}
+
+.yellow {
+    background-color: #FF0;
+}
+
+.green {
+    background-color: #0F0;
+}
+
+.purple {
+    background-color: #F0F;
+}
+
+.red {
+    background-color: #F00;
+}
