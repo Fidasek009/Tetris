@@ -13,6 +13,8 @@ body {
     border-radius: 100px;
 }
 
+/*---------------------------------------------*/
+
 .title {
     text-align: center;
     font-size: 50px;
@@ -32,6 +34,17 @@ body {
     border-radius: 25px;
     font-size: 24px;
 }
+
+.plug {
+    position: absolute;
+    bottom: 1vh;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    padding: 0;
+}
+
+/*---------------------------------------------*/
 
 .scoreboard {
     display: inline-block;
@@ -70,6 +83,8 @@ body {
     margin-left: 60px;
 }
 
+/*---------------------------------------------*/
+
 .field-wrapper {
     position: absolute;
     left: 50%;
@@ -79,6 +94,12 @@ body {
     border: #000 5px solid;
     border-radius: 50px;
     background-color: #009;
+}
+
+.nextTitle {
+    position: absolute;
+    right: 10vw;
+    top: 30vh;
 }
 
 .next-wrapper {
@@ -91,12 +112,12 @@ body {
     background-color: #009;
 }
 
-
 .field {
     margin: auto;
     background-color: #999;
 }
 
+/*---------------------------------------------*/
 
 .black {
     display: table-cell;
