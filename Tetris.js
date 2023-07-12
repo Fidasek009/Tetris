@@ -94,24 +94,23 @@ const Z = {
 
 const SHAPES = [I, J, L, O, S, T, Z]
 
+
 const Shape = class {
     currentShape = []
     centerPos = {x: 0, y: 0}
     field = []
 
-    constructor(field) {
+    constructor(field, shape) {
         this.field = field
-        this.shape = this.randomShape()
+
+        this.shape = shape
         console.log(this.shape)
         this.rotation = 0
-
         this.currentShape = this.shape.shapes[this.rotation]
         this.centerPos = {x: Math.floor(field[0].length/2), y: Math.floor(this.currentShape.length/2)}
 
         gameOver = this.checkCollision()
     }
-
-    randomShape = () => SHAPES[Math.floor(Math.random() * SHAPES.length)]
 
     getPos = (x, y) => {
         let shapeCenter = {x: Math.floor(this.currentShape[0].length/2), y: Math.floor(this.currentShape.length/2)}
@@ -222,11 +221,15 @@ const Cell = class {
     collision = () => this.color != 'black'
 
     setColor = (color) => {
-        if(color == 'black') this.span.className = 'black'
-        else this.span.classList.add(color)
+        if(color == this.color) return
+
+        this.span.className = 'black'
+        if(color != 'black') this.span.classList.add(color)
         this.color = color
     }
 }
+
+// ------------------------------------------------------------------------------------------------
 
 // used for rendering the game field
 const Field = class {
@@ -236,11 +239,15 @@ const Field = class {
     width = 0
     height = 0
 
-    constructor(rows, cols) {
+    constructor(rows, cols, parent) {
         this.width = cols
         this.height = rows
-        this.score = 0
-        this.scoreCounter = document.getElementById('score')
+        this.rows = 0
+        this.rowCounter = document.getElementById('rows')
+        this.rowCounter.innerHTML = this.rows
+        
+        // clear previous game
+        parent.innerHTML = ''
 
         // table
         const table = document.createElement('table')
@@ -256,7 +263,7 @@ const Field = class {
             }
             table.appendChild(row)
         }
-        document.getElementById('field-wrapper').appendChild(table)
+        parent.appendChild(table)
     }
 
     checkRows = () => {
@@ -270,13 +277,23 @@ const Field = class {
             }
             if(full) {
                 this.removeRow(i)
-                this.score++
-                this.scoreCounter.innerHTML = this.score
+                this.rows++
+                this.rowCounter.innerHTML = this.rows
             }
         }
     }
 
-    removeRow = (row) => {
+    removeRow = async (row) => {
+        // show white row
+        for(let j = 0; j < this.width; j++) {
+            this.gameState[row][j].setColor('white')
+        }
+        
+        document.getElementById('break').play()
+        wait = true
+        await sleep(250)
+        
+        // redraw rows
         for(let i = row; i > 0; i--) {
             for(let j = 0; j < this.width; j++) {
                 this.gameState[i][j].setColor(this.gameState[i-1][j].color)
@@ -287,34 +304,89 @@ const Field = class {
 
 
 // ================================================================================================
-var gameOver = false
-var down = false
+var gameOver = true
+var paused = false
+var wait = false
 
 const Game = class {
-    // initialize field
-    field = new Field(20, 10)
-    speed = 400
+    shape = undefined
+    nextShape = undefined
 
     // play game
-    constructor() {
+    constructor(height, width) {
+        this.score = 0
+        this.scoreCounter = document.getElementById('score')
+        this.scoreCounter.innerHTML = this.score
+        // initialize field
+        this.field = new Field(height, width, document.getElementById('field-wrapper'))
         this.speed = 400
+
+        // generate next shape
+        this.newNextShape()
+    }
+
+    randomShape = () => SHAPES[Math.floor(Math.random() * SHAPES.length)]
+
+    newNextShape = () => {
+        this.nextShape = new Shape(nextShapeField.gameState, this.randomShape())
+        this.nextShape.centerPos = {x: 2, y: 2}
+        this.nextShape.renderShape()
+    }
+
+    getNextShape = () => {
+        this.shape = new Shape(this.field.gameState, this.nextShape.shape)
+        if(gameOver) {
+            sleepInterrupt = true
+            return
+        }
+        this.shape.renderShape()
+
+        this.nextShape.hideShape()
+        this.newNextShape()
     }
 
     async play() {
         while(!gameOver) {
-            this.shape = new Shape(this.field.gameState)
-            if(gameOver) break
-            this.shape.renderShape()
-            sleep(500)
-            while(this.shape.fall()) await tick(this.speed/50)
+            // get new shape
+            if(this.shape == undefined) this.getNextShape()
+
+            // fall shape
+            while(this.shape.fall() && !paused) await tick(Math.floor(this.speed/50))
+            
+            // pause game
+            if(paused) {
+                return
+            }
+
+            // add score
+            this.score++
+            this.scoreCounter.innerHTML = this.score
+            this.speed = 500 - this.score
+            this.shape = undefined
+
+            // destroy full rows
             this.field.checkRows()
-            this.speed = 400 - this.field.score*10
+            if(wait) {
+                await sleep(500)
+                wait = false
+            }
+
+            // create new shape
+            this.getNextShape()
+            await tick(10)
         }
-        
+
+        pauseBtn.hidden = true
+        playBtn.hidden = false
+        gameOverText.hidden = false
+        song.pause()
+        song.currentTime = 0;
+        document.getElementById('gameOver').play()
     }
 }
 
 // ================================================================================================
+
 var sleepInterrupt = false
 
 // 1 tick = 50ms
@@ -330,13 +402,40 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-var game = new Game()
+const playBtn = document.getElementById('playBtn')
+const pauseBtn = document.getElementById('pauseBtn')
+const gameOverText = document.getElementById('game-over')
+const song = document.getElementById('song')
+song.volume = 0.1
 
-game.play()
+function play() {
+    playBtn.hidden = true
+    pauseBtn.hidden = false
+    paused = false
+    song.play()
 
-//field.playField[0][0].classList.add('yellow')
-//field.playField[0][0].className = 'black'
+    if(gameOver) {
+        gameOver = false
+        gameOverText.hidden = true
+        nextShapeField = new Field(4, 4, document.getElementById('next-wrapper'))
+        game = new Game(20, 10)
+        game.play()
+    }
+    else {
+        game.play()
+    }
+}
 
-// field.gameState[0][0].setColor('yellow')
-// console.log(field.gameState[0][0].isFree())
-// console.log(field.gameState[0][1].isFree())
+function pause() {
+    pauseBtn.hidden = true
+    playBtn.hidden = false
+    song.pause()
+
+    if(!gameOver) {
+        paused = true
+        sleepInterrupt = true
+    }
+}
+
+var nextShapeField = new Field(4, 4, document.getElementById('next-wrapper'))
+var game = new Game(20, 10)

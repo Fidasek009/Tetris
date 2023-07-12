@@ -3,23 +3,23 @@ window.onload = function (){
         // left
         if(e.keyCode == 37){
             console.log("left")
-            if(!gameOver) game.shape.moveSideways(true)
+            if(!gameOver  && !wait && !paused) game.shape.moveSideways(true)
         }
         // up
         else if(e.keyCode == 38){
             console.log("up")
-            if(!gameOver) game.shape.rotate()
+            if(!gameOver && !wait && !paused) game.shape.rotate()
         }
         // right
         else if(e.keyCode == 39){
             console.log("right")
-            if(!gameOver) game.shape.moveSideways(false)
+            if(!gameOver  && !wait && !paused) game.shape.moveSideways(false)
         }
         // down
         else if (e.keyCode == 40){
             console.log("down")
-            if(!gameOver) {
-                game.speed = 50
+            if(!gameOver  && !paused) {
+                game.speed = (game.speed > 50) ? 50 : 400
                 sleepInterrupt = true
             }
         }

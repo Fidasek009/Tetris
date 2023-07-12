@@ -8,12 +8,22 @@
     <title>Tetris</title>
 </head>
 <body>
-    <h1 class="title">very Tetris 👈(ﾟヮﾟ👈)</h1>
-    <button class="btn" onclick="play()">PLAY!</button>
-    <div id="game">
-        <div class="field-wrapper" id="field-wrapper">
-            <label for="score">Score: </label><h2 id="score">0</h2>
+    <div class="game">
+        <h1 class="title">ULTIMATE Tetris 👈(ﾟヮﾟ👈)</h1>
+        <h1 id="game-over" class="game-over" hidden>⛔GAME OVER!⛔</h1>
+        <div class="field-wrapper" id="field-wrapper"></div>
+        <div class="scoreboard">
+            <div class="rows">Rows: <span id="rows">0</span></div>
+            <div class="score">Score: <span id="score">0</span></div>
         </div>
+        <br>
+        <button id="playBtn" class="btn" onclick="play()">PLAY!</button>
+        <button id="pauseBtn" class="btn" onclick="pause()" hidden>PAUSE</button>
+        <div id="next-wrapper" class="next-wrapper"></div>
     </div>
+
+    <audio id="song" src="Tetris.mp3" loop />
+    <audio id="break" src="break.mp3" />
+    <audio id="gameOver" src="gameOver.mp3" />
 </body>
 </html>
