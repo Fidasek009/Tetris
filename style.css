@@ -28,7 +28,7 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 100;
-    background-color: #009;
+    background-color: #00A;
     padding: 10px;
     border: #000 5px solid;
     border-radius: 25px;
@@ -58,7 +58,7 @@ body {
 .score {
     font-size: 30px;
     padding: 10px;
-    background-color: #009;
+    background-color: #00A;
     border: #000 5px solid;
     border-radius: 10px;
 }
@@ -66,7 +66,7 @@ body {
 .rows {
     font-size: 30px;
     padding: 10px;
-    background-color: #009;
+    background-color: #00A;
     border: #000 5px solid;
     border-radius: 10px;
 }
@@ -85,31 +85,65 @@ body {
 
 /*---------------------------------------------*/
 
+.controls {
+    text-align: center;
+    background-color: #006;
+    display: inline-block;
+    margin: 20px;
+    padding: 0 25px 0 25px;
+    border: #000 5px solid;
+    border-radius: 20px;
+    
+}
+
+.controls ul {
+    text-align: left;
+    padding: 0;
+    list-style-type: none;
+}
+
+.key {
+    display: inline-block;
+    background-color: #00A;
+    color: #fff;
+    font-size: 24px;
+    border: #000 2px solid;
+    border-radius: 10px;
+    margin: 10px;
+    width: 50px;
+    height: 50px;
+}
+
+
+/*---------------------------------------------*/
+
 .field-wrapper {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
+    top: 15vh;
     display: inline-block;
     padding: 50px;
     border: #000 5px solid;
     border-radius: 50px;
-    background-color: #009;
+    background-color: #00A;
 }
 
 .nextTitle {
     position: absolute;
     right: 10vw;
-    top: 30vh;
+    top: 33vh;
 }
 
 .next-wrapper {
     position: absolute;
     right: 8vw;
+    top: 15vh;
     display: inline-block;
     padding: 25px;
     border: #000 5px solid;
     border-radius: 50px;
-    background-color: #009;
+    background-color: #005;
 }
 
 .field {
