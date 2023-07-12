@@ -239,6 +239,8 @@ const Field = class {
     constructor(rows, cols) {
         this.width = cols
         this.height = rows
+        this.score = 0
+        this.scoreCounter = document.getElementById('score')
 
         // table
         const table = document.createElement('table')
@@ -256,6 +258,31 @@ const Field = class {
         }
         document.getElementById('field-wrapper').appendChild(table)
     }
+
+    checkRows = () => {
+        for(let i = 0; i < this.height; i++) {
+            let full = true
+            for(let j = 0; j < this.width; j++) {
+                if(this.gameState[i][j].color == 'black') {
+                    full = false
+                    break
+                }
+            }
+            if(full) {
+                this.removeRow(i)
+                this.score++
+                this.scoreCounter.innerHTML = this.score
+            }
+        }
+    }
+
+    removeRow = (row) => {
+        for(let i = row; i > 0; i--) {
+            for(let j = 0; j < this.width; j++) {
+                this.gameState[i][j].setColor(this.gameState[i-1][j].color)
+            }
+        }
+    }
 }
 
 
@@ -266,12 +293,10 @@ var down = false
 const Game = class {
     // initialize field
     field = new Field(20, 10)
-    score = 0
     speed = 400
 
     // play game
     constructor() {
-        this.score = 0
         this.speed = 400
     }
 
@@ -280,17 +305,29 @@ const Game = class {
             this.shape = new Shape(this.field.gameState)
             if(gameOver) break
             this.shape.renderShape()
-            sleep(400)
-            while(this.shape.fall()) await sleep(this.speed)
+            sleep(500)
+            while(this.shape.fall()) await tick(this.speed/50)
+            this.field.checkRows()
+            this.speed = 400 - this.field.score*10
         }
         
     }
 }
 
 // ================================================================================================
+var sleepInterrupt = false
+
+// 1 tick = 50ms
+async function tick(ticks) {
+    while(ticks > 0 && !sleepInterrupt) {
+        ticks--
+        await sleep(50)
+    }
+    sleepInterrupt = false
+}
 
 function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise(resolve => setTimeout(resolve, ms))
 }
 
 var game = new Game()

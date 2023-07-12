@@ -1,5 +1,3 @@
-var wait = false
-
 window.onload = function (){
     eventHandler = async function (e){
         // left
@@ -20,12 +18,9 @@ window.onload = function (){
         // down
         else if (e.keyCode == 40){
             console.log("down")
-            if(!gameOver && !wait) {
-                wait = true
-                while(game.shape.fall()) await sleep(50)
-                game.shape = new Shape(game.field.gameState)
-                game.shape.renderShape()
-                wait = false
+            if(!gameOver) {
+                game.speed = 50
+                sleepInterrupt = true
             }
         }
     }

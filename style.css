@@ -1,10 +1,10 @@
 body {
     background-color: #333;
     font-family: 'Comic Sans MS';
+    color: #fff;
 }
 
 .title {
-    color: #fff;
     text-align: center;
     font-size: 50px;
     margin: 0;
